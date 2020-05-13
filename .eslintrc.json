@@ -1,10 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": [
-    "airbnb",
-    "plugin:prettier/recommended",
-    "prettier/react"
-  ],
+  "extends": ["airbnb", "plugin:prettier/recommended", "prettier/react"],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -13,10 +9,9 @@
     "node": true
   },
   "rules": {
+    "no-useless-return": "off",
     "import/prefer-default-export": "warn",
-    "jsx-a11y/href-no-hash": [
-      "off"
-    ],
+    "jsx-a11y/href-no-hash": ["off"],
     "max-len": [
       "warn",
       {
@@ -31,17 +26,9 @@
         "ignoreRegExpLiterals": true
       }
     ],
-    "no-bitwise": [
-      "off"
-    ],
-    "no-plusplus": [
-      "off"
-    ],
-    "no-restricted-globals": [
-      "error",
-      "event",
-      "fdescribe"
-    ],
+    "no-bitwise": ["off"],
+    "no-plusplus": ["off"],
+    "no-restricted-globals": ["error", "event", "fdescribe"],
     "no-underscore-dangle": "warn",
     "prefer-arrow-callback": "error",
     "prefer-destructuring": [
@@ -63,9 +50,6 @@
     }
   },
   "settings": {
-    "polyfills": [
-      "fetch",
-      "promises"
-    ]
+    "polyfills": ["fetch", "promises"]
   }
 }
