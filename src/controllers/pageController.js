@@ -24,7 +24,14 @@ const getPage = (req, res) => {
       return;
     }
     const content = fs.readFileSync(path.join(DOC_LOCATION, book, pageDictionary.filename));
-    res.json(wrapData(content.toString()));
+    const subPageContent = [];
+    if (pageDictionary.pages) {
+      pageDictionary.pages.forEach((sb) => {
+        const data = fs.readFileSync(path.join(DOC_LOCATION, book, sb.filename));
+        subPageContent.push({ ...wrapData(data.toString()), ...sb });
+      });
+    }
+    res.json({ ...wrapData(content.toString()), ...{ sub_page_data: subPageContent } });
   } catch (error) {
     res.status(400).json(wrapError(error));
   }
@@ -78,7 +85,27 @@ const deletePage = (req, res) => {
       res.status(404).json(wrapError(`We don't have that page on book ${book} to delete`));
       return;
     }
-    fs.unlinkSync(path.join(DOC_LOCATION, book, metadata.pages[index].filename));
+    try {
+      fs.unlinkSync(path.join(DOC_LOCATION, book, metadata.pages[index].filename));
+    } catch (e) {
+      // TODO: Optimization
+      // May be it already got deleted
+      // Haven't checked the condition same slug can have same file or not
+      console.log('Deletion failure...');
+    }
+    // Remove sub pages also
+    if (metadata.pages[index].pages) {
+      metadata.pages[index].pages.forEach((sb) => {
+        try {
+          fs.unlinkSync(path.join(DOC_LOCATION, book, sb.filename));
+        } catch (e) {
+          // TODO: Optimization
+          // May be it already got deleted
+          // Haven't checked the condition same slug can have same file or not
+          console.log('Deletion failure...');
+        }
+      });
+    }
     metadata.pages.splice(index);
     fs.writeFileSync(path.join(DOC_LOCATION, book, METADATA_FILE), JSON.stringify(metadata));
     res.status(201).json(wrapMessage('Successfully deleted the page'));
