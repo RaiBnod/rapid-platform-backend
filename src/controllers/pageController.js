@@ -69,10 +69,11 @@ const updatePage = (req, res) => {
       res.status(404).json(wrapError(`We don't have that page on book ${book} to edit`));
       return;
     }
-    fs.unlinkSync(path.join(DOC_LOCATION, book, metadata.pages[index].filename));
+    const { pages, filename: fname } = metadata.pages[index];
+    fs.unlinkSync(path.join(DOC_LOCATION, book, fname));
     metadata.pages.splice(index);
     fs.writeFileSync(path.join(DOC_LOCATION, book, filename), content);
-    metadata.pages.push({ title, slug: page, filename, pages: null });
+    metadata.pages.push({ title, slug: page, filename, pages });
     fs.writeFileSync(path.join(DOC_LOCATION, book, METADATA_FILE), JSON.stringify(metadata));
     res.status(201).json(wrapMessage('Successfully created the page'));
   } catch (error) {

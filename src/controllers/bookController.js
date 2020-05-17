@@ -7,6 +7,10 @@ const findAllBooks = (req, res) => {
   fs.readdir(DOC_LOCATION, (error, files) => {
     if (error) {
       res.status(204).send();
+      return;
+    }
+    if (!files) {
+      res.json([]);
     }
     const books = files.map((file) => {
       return { slug: file, pages: [] };
@@ -19,6 +23,7 @@ const findAllBooks = (req, res) => {
         );
       } catch (e) {
         res.status(204).send();
+        return;
       }
       content.pages.forEach((page) => {
         books[index].pages.push(page.slug);
