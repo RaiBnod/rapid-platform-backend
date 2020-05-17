@@ -8,7 +8,7 @@ const getPages = (req, res) => {
   try {
     const metadata = JSON.parse(fs.readFileSync(path.join(DOC_LOCATION, book, METADATA_FILE)));
     const pages = metadata.pages.map((p) => p.slug);
-    res.json(wrapData(pages));
+    res.json(pages);
   } catch (error) {
     res.status(400).json(wrapError(error));
   }
@@ -31,7 +31,11 @@ const getPage = (req, res) => {
         subPageContent.push({ ...wrapData(data.toString()), ...sb });
       });
     }
-    res.json({ ...wrapData(content.toString()), ...{ sub_page_data: subPageContent } });
+    res.json({
+      ...wrapData(content.toString()),
+      ...pageDictionary,
+      ...{ sub_page_data: subPageContent },
+    });
   } catch (error) {
     res.status(400).json(wrapError(error));
   }

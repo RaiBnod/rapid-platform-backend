@@ -1,14 +1,30 @@
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_PAGE, DOC_LOCATION, METADATA_FILE } from './constant';
-import { wrapData, wrapError, wrapMessage } from './utils';
+import { wrapError, wrapMessage } from './utils';
 
 const findAllBooks = (req, res) => {
   fs.readdir(DOC_LOCATION, (error, files) => {
     if (error) {
-      res.status(204).json(wrapError(error));
+      res.status(204).send();
     }
-    res.json(wrapData(files));
+    const books = files.map((file) => {
+      return { slug: file, pages: [] };
+    });
+    books.forEach((book, index) => {
+      let content;
+      try {
+        content = JSON.parse(
+          fs.readFileSync(path.join(DOC_LOCATION, book.slug, METADATA_FILE)).toString()
+        );
+      } catch (e) {
+        res.status(204).send();
+      }
+      content.pages.forEach((page) => {
+        books[index].pages.push(page.slug);
+      });
+    });
+    res.json(books);
   });
 };
 

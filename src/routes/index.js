@@ -22,7 +22,7 @@ const routes = (app) => {
   app.put('/api/book/:book/page/:page', updatePage);
   app.delete('/api/book/:book/page/:page', deletePage);
 
-  app.post('/api/book/:book/page/:page', createSubPage);
+  app.post('/api/book/:book/page/:page/sub-page', createSubPage);
 };
 
 export default routes;
